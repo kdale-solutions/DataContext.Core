@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "DataContext.Core": {
+      "commandName": "Project"
+    }
+  }
+}

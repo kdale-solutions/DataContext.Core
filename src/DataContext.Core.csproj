@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	
+	<PropertyGroup>
+		<PackageVersion>0.0.0</PackageVersion>
+		<Icon>data-service-core.png</Icon>
+		<UsingMicrosoftSdk>True</UsingMicrosoftSdk>
+	</PropertyGroup>
+
+	<Import Project="$(INTERNAL_TOOLS_PATH)InternalPackageFeed.props" />
+
+	<PropertyGroup>
+		<AssemblyName>DataContext.Core</AssemblyName>
+		<AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+		<AssemblyVersion>$(PackageVersion)</AssemblyVersion>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NoWarn>EF1001</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>$(AssemblyName)</PackageId>
+		<PackageIcon>$(Icon)</PackageIcon>
+		<PackageIconUrl>$(Icon)</PackageIconUrl>
+		<Description>kdale-solutions DataContext Core package containing base entities and configuration along with the tools needed to create a data model using Entity Framework Core.</Description>
+		<Version>$(PackageVersion)</Version>
+		<Owners>Kenneth Dale</Owners>
+		<Authors>Kenneth Dale</Authors>
+		<PackageTags>Microsoft;Dotnet;.NET;NET Core;Dotnet Core;.NET Core;EF;EF Core;Entity;Entity Framework;Entity Framework Core;Shared;Common;Utility;Utilities;Extension;Extensions;Extension Method;Extension Methods;Constant;Constants;File IO;ServiceProvider;ConfigurationProvider;IServiceCollection;IConfiguration;IConfigurationRoot;Application Configuration</PackageTags>
+		<PackageReadmeFile>$(ReadMeFile)</PackageReadmeFile>
+		<PackageReleaseNotes>Renamed package.</PackageReleaseNotes>
+		<!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\static-files\$(ReadMeFile)">
+			<Pack>true</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		
+		<None Include="$(PackageIconDir)$(Icon)">
+			<Pack>true</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="DiagnosticSuite.EventHandling" Version="0.*" PrivateAssets="All" />
+		<PackageReference Include="DiagnosticSuite.Logging" Version="0.*" PrivateAssets="All" />
+		<PackageReference Include="Global" Version="0.*" PrivateAssets="All"/>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Microsoft.EntityFrameworkCore" />
+	</ItemGroup>
+	
+</Project>
