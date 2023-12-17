@@ -46,7 +46,7 @@
 	<ItemGroup>
 		<PackageReference Include="DiagnosticSuite.EventHandling" Version="0.*" PrivateAssets="All" />
 		<PackageReference Include="DiagnosticSuite.Logging" Version="0.*" PrivateAssets="All" />
-		<PackageReference Include="Global" Version="0.*" PrivateAssets="All"/>
+		<PackageReference Include="Global" Version="0.*" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" PrivateAssets="All" />
 	</ItemGroup>
