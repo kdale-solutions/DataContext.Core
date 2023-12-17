@@ -5,9 +5,9 @@
 	{ 
 		public string DataContextId { get; }
 
-		public DataModelAttribute(string dataServiceId) 
+		public DataModelAttribute(string dataContextId) 
 		{
-			DataContextId = dataServiceId;
+			DataContextId = dataContextId;
 		}
 	}
 }

@@ -35,9 +35,9 @@ namespace DataContext.Core.Configuration.ModelBuilderUtilities
 
 		private static PropertyBuilder GetValueConversion(this PropertyBuilder propertyBuilder, string typeName)
 		{
-			var metadataAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetCustomAttribute<MigrationsConfigurationAttribute>() != null);
+			var metadataAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetCustomAttribute<DataModelConfigurationAttribute>() != null);
 
-			if (metadataAssembly == null) throw new DllNotFoundException($"Unable to locate assembly with {nameof(MigrationsConfigurationAttribute)} in AppDomain.CurrentDomain.BaseDirectory {AppDomain.CurrentDomain.BaseDirectory}.");
+			if (metadataAssembly == null) throw new DllNotFoundException($"Unable to locate assembly with {nameof(DataModelConfigurationAttribute)} in AppDomain.CurrentDomain.BaseDirectory {AppDomain.CurrentDomain.BaseDirectory}.");
 
 			var methodInfo = (from dType in metadataAssembly.DefinedTypes
 							  from dMethod in dType.GetMethods()
@@ -53,4 +53,3 @@ namespace DataContext.Core.Configuration.ModelBuilderUtilities
 		}
 	}
 }
-
