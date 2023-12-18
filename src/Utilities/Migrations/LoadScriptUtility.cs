@@ -22,7 +22,7 @@ namespace DataContext.Core.Utilities.Migrations
 
 			if (!string.IsNullOrEmpty(appDomainDir))
 			{
-				_filePathBase = $"{appDomainDir}..\\..\\..\\..\\Migrations.Configuration\\Entities\\";
+				_filePathBase = $"{appDomainDir}..\\..\\..\\..\\";
 			}
 		}
 
