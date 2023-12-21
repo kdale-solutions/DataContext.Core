@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	
 	<PropertyGroup>
-		<PackageVersion>0.0.0.1</PackageVersion>
+		<PackageVersion>0.0.0.2</PackageVersion>
 		<Icon>data-service-core.png</Icon>
 		<UsingMicrosoftSdk>True</UsingMicrosoftSdk>
 	</PropertyGroup>
@@ -46,7 +46,7 @@
 	<ItemGroup>
 		<PackageReference Include="DiagnosticSuite.EventHandling" Version="0.*" PrivateAssets="All" />
 		<PackageReference Include="DiagnosticSuite.Logging" Version="0.*" PrivateAssets="All" />
-		<PackageReference Include="Global" Version="0.*" PrivateAssets="All" />
+		<PackageReference Include="Global" Version="0.0.2.5" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" PrivateAssets="All" />
 	</ItemGroup>

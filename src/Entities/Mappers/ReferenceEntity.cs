@@ -1,4 +1,4 @@
-﻿using DataContext.Core.Interfaces.Entity;
+﻿using Global.Models;
 using Global.ValueTypes;
 using System.Linq.Expressions;
 
@@ -8,13 +8,6 @@ namespace DataContext.Core.Entities
 		where K : struct, IConvertible
 	{
 		public static Expression<Func<ReferenceEntity<K>, IdCodeNameModel<K>>> ToIdCodeNameModel = (x) => new IdCodeNameModel<K>
-		{
-			Id = x.Id,
-			Code = x.Code,
-			Name = x.Name
-		};
-
-		public static Expression<Func<ReferenceEntity<K>, IdCodeNameModel<K>>> ToReferenceEntityDomainModel = (x) => new IdCodeNameModel<K>
 		{
 			Id = x.Id,
 			Code = x.Code,

@@ -9,7 +9,7 @@ namespace DataContext.Core.Configuration.EntityType
         BaseReferenceEntityConfiguration<TEntity, K>, 
         IEntityTypeConfiguration<TEntity>
 		    where TEntity : ReferenceEntity<K>
-			where K : struct
+			where K : struct, IConvertible
 	{
         public new void Configure(EntityTypeBuilder<TEntity> builder)
 		{
