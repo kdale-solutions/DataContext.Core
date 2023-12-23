@@ -24,14 +24,35 @@ namespace DataContext.Core.DesignTimeServices
 			bool terminate = true
 			)
 		{
-			base.Generate(operation, model, builder, terminate);
+			var sqlScripts = LoadScriptUtility.GetSqlFiles(operation.Name);
 
-			Generate(operation, builder);
+			if (sqlScripts == null)
+			{
+				base.Generate(operation, model, builder, terminate);
+			}
+			else
+			{
+				var preCreatePath = sqlScripts.FirstOrDefault(x => x.EndsWith(".pre.sql", StringComparison.OrdinalIgnoreCase));
+
+				if (preCreatePath != null) 
+				{
+					Generate(preCreatePath, builder);
+				}
+
+				base.Generate(operation, model, builder, terminate);
+
+				var postCreatePath = sqlScripts.FirstOrDefault(x => x.EndsWith(".post.sql", StringComparison.OrdinalIgnoreCase));
+
+				if (postCreatePath != null)
+				{
+					Generate(postCreatePath, builder);
+				}
+			}
 		}
 
-		private void Generate(ITableMigrationOperation operation, MigrationCommandListBuilder builder)
+		private void Generate(string filePath, MigrationCommandListBuilder builder)
 		{
-			var sql = LoadScriptUtility.GetSql(operation.Table);
+			var sql = LoadScriptUtility.GetSql(filePath);
 
 			if (sql == string.Empty) return;
 

@@ -1,6 +1,6 @@
 ﻿using Global.Utilities;
 
-#nullable enable
+#nullable disable
 namespace DataContext.Core.Utilities.Migrations
 {
 	public static class LoadScriptUtility
@@ -26,13 +26,14 @@ namespace DataContext.Core.Utilities.Migrations
 			}
 		}
 
-		public static string GetSql(string entityName)
+		public static string[] GetSqlFiles(string entityName)
 		{
-			var fileInfo = Directory.GetFiles(_filePathBase, $"*{entityName}.sql", _enumerationOptions);
+			return Directory.GetFiles(_filePathBase, $"*{entityName}.sql", _enumerationOptions);
+		}
 
-			if (fileInfo.IsNullOrEmpty()) return string.Empty;
-
-			using var fileStream = File.OpenText(fileInfo[0]);
+		public static string GetSql(string filePath)
+		{
+			using var fileStream = File.OpenText(filePath);
 
 			return fileStream.ReadToEnd();
 		}
