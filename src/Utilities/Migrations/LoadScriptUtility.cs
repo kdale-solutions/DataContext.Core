@@ -28,7 +28,7 @@ namespace DataContext.Core.Utilities.Migrations
 
 		public static string[] GetSqlFiles(string entityName)
 		{
-			return Directory.GetFiles(_filePathBase, $"*{entityName}.sql", _enumerationOptions);
+			return Directory.GetFiles(_filePathBase, $"*{entityName}.*sql", _enumerationOptions);
 		}
 
 		public static string GetSql(string filePath)
