@@ -19,7 +19,7 @@ namespace DataContext.Core.Utilities.KeyConstraints
         {
             _referenceEntityDirectoryPath = $"{
                 Environment.GetEnvironmentVariable(DataConstants.DataContextPathVar)
-                }DataModel\\Entities\\Reference\\";
+                }DataModel.Configuration\\Entities\\Reference\\";
 
 			_referenceEntityModelCache = new ConcurrentDictionary<string, object>();
             _jsonSerializerOptions = InternalJsonSerializerOptions.Default;
@@ -49,8 +49,8 @@ namespace DataContext.Core.Utilities.KeyConstraints
 			}
 
             using var jsonDocument = JsonDocument.Parse(File.OpenRead(GetJsonFilePath(typeName)));
-
-			var res = JsonSerializer.Deserialize<List<IdCodeNameModel<K>>>(jsonDocument, _jsonSerializerOptions).AsReadOnly();
+            
+			var res = JsonSerializer.Deserialize<List<IdCodeNameModel<K>>>(jsonDocument.RootElement.GetProperty("records"), _jsonSerializerOptions).AsReadOnly();
 
             _referenceEntityModelCache.TryAdd(typeName, res);
 

@@ -43,6 +43,7 @@
 			public const string Datetime2 = "datetime2";
 			public const string SmallDateTime = "smalldatetime";
 			public const string Time = "time";
+			public const string Binary = "binary";
 			public const string Varbinary = "varbinary";
 			public const string Rowversion = "rowversion";
 		}
@@ -107,13 +108,15 @@
             public const int VendorItemNum = 36;
             public const int ItemNum = 25;
 
-            public const int ShippingAccountNum = 35;
+			public const int ShippingAccountNum = 35;
             public const int ShippingRateServiceCode = 35;
 
             public const int OrderNumPrefix = 5;
             public const int AisleRowBin = 5;
             public const int HexColorCode = 6;
-        }
+
+			public const int Sha512Hash = 64;
+		}
 
         public class Scale
         {
