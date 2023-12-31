@@ -60,6 +60,11 @@
             public const int Char2 = 2;
             public const int Char3 = 3;
 
+            public class Max
+            {
+                public const int SqlServer = 8000;
+            }
+
 			public const int FileExtension = 4;
 			public const int CreditCardLastFourDigits = 4;
 			public const int ReferenceEntityCode = 5;

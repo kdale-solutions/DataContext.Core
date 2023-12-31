@@ -4,13 +4,12 @@ using System.Text.Json.Serialization;
 
 namespace DataContext.Core.Entities
 {
-	public abstract class TransactionalEntity : BaseEntity<int>, ITransactionalEntity
+	public abstract partial class TransactionalEntity : BaseEntity<int>, ITransactionalEntity
 	{
 		[JsonIgnore]
         public byte[] RowVersion { get; set; }
 
 		[NotMapped]
-		[JsonIgnore]
 		public Dictionary<string, object> ModificationBag { get; set; }
 	}
 }
