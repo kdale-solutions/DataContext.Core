@@ -1,4 +1,5 @@
 using DataContext.Core.Context;
+using DataContext.Core.Entities;
 using DataContext.Core.Events.EventArgs;
 using DataContext.Core.Interfaces.Entity;
 using DataContext.Core.ValueTypes;
@@ -85,7 +86,11 @@ namespace Infrastructure.Diagnostics.Audit
 			}
 			else
 			{
-				foreach (var prop in entry.Properties)
+				var properties = (from prop in entry.Properties
+								  where !prop.Metadata.Name.IsEqualToIgnoreCase(nameof(TransactionalEntity.RowVersion))
+								  select prop);
+
+				foreach (var prop in properties)
 				{
 					modificationBag.Add(prop.Metadata.Name, prop.CurrentValue);
 				}
