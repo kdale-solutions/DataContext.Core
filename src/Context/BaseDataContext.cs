@@ -1,87 +1,85 @@
-﻿using DataContext.Core.EqualityComparers;
+﻿using DataContext.Core.Interfaces.Entity;
 using DataContext.Core.Utilities;
-using Infrastructure.Diagnostics.Audit;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Collections.Concurrent;
+using Global.Configuration;
+using System.Threading;
 
 namespace DataContext.Core.Context
 {
-	public class BaseDataContext<TContext> : DbContext where TContext : DbContext
+	public abstract class BaseDataContext<TContext> : DbContext where TContext : DbContext
 	{
+		private readonly IEntityAuditor _entityAuditor;
+
 		public string Name { get; private set; }
 
-		public ConcurrentDictionary<IEntityType, Dictionary<string, object>> ModificationBags { get; set; }
-
-		public BaseDataContext(DbContextOptions<TContext> options)
+		public BaseDataContext(DbContextOptions<TContext> options) 
+			: base(options)
 		{
 			this.ChangeTracker.LazyLoadingEnabled = false;
 			this.ChangeTracker.AutoDetectChangesEnabled = false;
 
+			_entityAuditor = HostUtility.Resolve<IEntityAuditor>();
+
 			Name = this.GetType().Name;
-
-			ModificationBags = new ConcurrentDictionary<IEntityType, Dictionary<string, object>>(new IEntityTypeEqualityComparer());
-		}
-
-		public override int SaveChanges(bool acceptAllChangesOnSuccess)
-		{
-			var result = base.SaveChanges(acceptAllChangesOnSuccess);
-
-			this.HandleAuditEvent(this.ChangeTracker.Entries())
-				.ConfigureAwait(false);
-
-			return result;
 		}
 
 		public override int SaveChanges()
 		{
-			var result = base.SaveChanges();
-
-			this.HandleAuditEvent(this.ChangeTracker.Entries())
-				.ConfigureAwait(false);
+			var result = this.SaveChanges(true);
 
 			return result;
 		}
 
-		public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+		public override int SaveChanges(bool acceptAllChangesOnSuccess)
 		{
 			try
 			{
-				var saveTask = base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+				var entries = this.ChangeTracker.Entries();
+
+				var preSaveEntries = _entityAuditor.GetAuditableEntries(entries);
+
+				var saveResult = base.SaveChanges(acceptAllChangesOnSuccess);
 
 				var token = this.GetCancellationToken();
 
-				this.HandleAuditEvent(this.ChangeTracker.Entries(), token)
-					.ConfigureAwait(false);
+				var auditTask = _entityAuditor.PerformAudit(preSaveEntries, token).ConfigureAwait(false);
 
-				return saveTask;
+				return saveResult;
 			}
 			catch (Exception _)
 			{
-				this.RequestCancellation();
+				var cancellationTask = this.RequestCancellation();
 			}
 
-			return Task.FromResult(0);
+			return 0;
 		}
 
 		public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 		{
+			return this.SaveChangesAsync(true, cancellationToken);
+		}
+
+		public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+		{
 			try
 			{
-				var saveTask = base.SaveChangesAsync(cancellationToken);
+				var entries = this.ChangeTracker.Entries();
+
+				var preSaveEntries = _entityAuditor.GetAuditableEntries(entries);
+
+				var saveResult = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 
 				var token = this.GetCancellationToken();
 
-				this.HandleAuditEvent(this.ChangeTracker.Entries(), token)
-					.ConfigureAwait(false);
+				var auditTask = _entityAuditor.PerformAudit(preSaveEntries, token).ConfigureAwait(false);
 
-				return saveTask;
+				return saveResult;
 			}
 			catch (Exception _)
 			{
-				this.RequestCancellation();
+				var cancellationTask = this.RequestCancellation();
 			}
 
-			return Task.FromResult(0);
+			return 0;
 		}
 	}
 }

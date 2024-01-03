@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	
 	<PropertyGroup>
-		<PackageVersion>0.0.0.12</PackageVersion>
+		<PackageVersion>0.0.0.29</PackageVersion>
 		<Icon>data-service-core.png</Icon>
 		<UsingMicrosoftSdk>True</UsingMicrosoftSdk>
 	</PropertyGroup>
@@ -28,7 +28,7 @@
 		<PackageTags>Microsoft;Dotnet;.NET;NET Core;Dotnet Core;.NET Core;EF;EF Core;Entity;Entity Framework;Entity Framework Core;Shared;Common;Utility;Utilities;Extension;Extensions;Extension Method;Extension Methods;Constant;Constants;File IO;ServiceProvider;ConfigurationProvider;IServiceCollection;IConfiguration;IConfigurationRoot;Application Configuration</PackageTags>
 		<PackageReadmeFile>$(ReadMeFile)</PackageReadmeFile>
 		<PackageReleaseNotes>Created BaseDataContext and moved auditing.</PackageReleaseNotes>
-		<!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

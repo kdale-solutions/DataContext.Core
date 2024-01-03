@@ -1,17 +1,19 @@
-﻿using DataContext.Core.Enums;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace DataContext.Core.Events.EventArgs
 {
-    public class AuditEventArgs
+	public class AuditEventArgs
     {
         public EntityState EntityState { get; init; }
         public string EntityName { get; init; }
-        public int EntityId { get; init; }
+        public int EntityId { get; set; }
 
-        public Dictionary<string, object> ModificationBag { get; init; } = null;
+        public Dictionary<string, object> ModificationBag { get; set; }
 
         public DateTime Timestamp { get; init; }
+
+        [JsonIgnore]
+        public Guid? TempId { get; set; }
 
         public AuditEventArgs() { }
 
@@ -19,10 +21,10 @@ namespace DataContext.Core.Events.EventArgs
         public AuditEventArgs(EntityState entityState, DateTime timestamp, string entityName, int entityId, Dictionary<string, object> modificationBag)
         {
             EntityState = entityState;
-            Timestamp = timestamp;
-            EntityName = entityName;
             EntityId = entityId;
-            ModificationBag = modificationBag;
+            EntityName = entityName;
+            Timestamp = timestamp;
+            ModificationBag = new Dictionary<string, object>(modificationBag, StringComparer.OrdinalIgnoreCase);
         }
     }
 }
