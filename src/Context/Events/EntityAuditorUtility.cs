@@ -77,7 +77,7 @@ namespace Infrastructure.Diagnostics.Audit
 				var modifiedProps = (from prop in entry.Properties
 									 where prop.IsModified
 									 select prop
-									 ).AsEnumerable();
+									).ToList();
 
 				foreach (var prop in modifiedProps)
 				{
@@ -97,6 +97,25 @@ namespace Infrastructure.Diagnostics.Audit
 			}
 
 			return modificationBag;
+		}
+
+		public static Dictionary<EntityState, List<EntityEntry>> Merge(this Dictionary<EntityState, List<EntityEntry>> principal, Dictionary<EntityState, List<EntityEntry>> dependent)
+		{
+			if (dependent.IsNullOrEmpty()) return principal;
+
+			foreach (var key in dependent.Keys)
+			{
+				if (principal.TryGetValue(key, out var entries))
+				{
+					entries.AddRange(dependent[key]);
+				}
+				else
+				{
+					principal.TryAdd(key, dependent[key]);
+				}
+			}
+
+			return principal;
 		}
 	}
 }

@@ -95,6 +95,10 @@ namespace DataContext.Core.Events.EventArgs
 
 				UtilityLogger<HttpClient>.Error($"Error reaching {_centralAuditAddress}", ex);
 			}
+			finally
+			{
+				EntityAuditorUtility.ModificationBags.Clear();
+			}
 
 			return responseMessage;
 		}
