@@ -18,12 +18,12 @@ namespace DataContext.Core.Events.EventArgs
         public AuditEventArgs() { }
 
         [JsonConstructor]
-        public AuditEventArgs(EntityState entityState, DateTime timestamp, string entityName, int entityId, Dictionary<string, object> modificationBag)
+        public AuditEventArgs(EntityState entityState, string entityName, int entityId, Dictionary<string, object> modificationBag)
         {
             EntityState = entityState;
             EntityId = entityId;
             EntityName = entityName;
-            Timestamp = timestamp;
+            Timestamp = DateTime.UtcNow;
             ModificationBag = new Dictionary<string, object>(modificationBag, StringComparer.OrdinalIgnoreCase);
         }
     }

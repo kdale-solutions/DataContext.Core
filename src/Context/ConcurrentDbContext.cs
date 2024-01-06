@@ -1,8 +1,8 @@
-﻿using DataContext.Core.Interfaces.Entity;
+﻿using DataContext.Core.Events.EventArgs;
+using DataContext.Core.Interfaces.Entity;
 using DataContext.Core.Utilities;
 using Global.Configuration;
 using Global.Utilities;
-using Infrastructure.Diagnostics.Audit;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DataContext.Core.Context
@@ -22,6 +22,8 @@ namespace DataContext.Core.Context
 
 		public Dictionary<EntityState, List<EntityEntry>> ChildAuditableEntries { get; set; }
 
+		public Action<EntityEntry> AddModifiedPropertiesToAuditor { get; init; }
+
 		public ConcurrentDbContext(DbContextOptions options) 
 			: base(options)
 		{
@@ -29,12 +31,14 @@ namespace DataContext.Core.Context
 			this.ChangeTracker.AutoDetectChangesEnabled = false;
 
 			_entityAuditor = HostUtility.Resolve<IEntityAuditor>();
-			_semaphore = new SemaphoreSlim(1, 1);
+			_semaphore = new SemaphoreSlim(1);
 
 			Name = this.GetType().Name;
 
 			this.Children = new List<ConcurrentDbContext>();
 			this.ChildAuditableEntries = new Dictionary<EntityState, List<EntityEntry>>();
+
+			this.AddModifiedPropertiesToAuditor = _entityAuditor.AddModifiedPropertiesToAuditor;
 		}
 
 		public override void Dispose()
@@ -94,14 +98,14 @@ namespace DataContext.Core.Context
 
 			if (Parent != null)
 			{
-				Parent.ChildAuditableEntries.Merge(preSaveEntries);
+				_entityAuditor.Merge(this.Parent.ChildAuditableEntries, preSaveEntries);
 
 				return saveResult;
 			}
 
 			var token = this.GetCancellationToken();
 
-			var auditTask = _entityAuditor.PerformAudit(ChildAuditableEntries.Merge(preSaveEntries), token)
+			var auditTask = _entityAuditor.PerformAudit(_entityAuditor.Merge(this.ChildAuditableEntries, preSaveEntries), token)
 				.ConfigureAwait(false);
 
 			return saveResult;
@@ -150,21 +154,24 @@ namespace DataContext.Core.Context
 		{
 			var entries = this.ChangeTracker.Entries();
 
-			var preSaveEntries = _entityAuditor.GetAuditableEntries(entries);
+			var entryMap = _entityAuditor.GetAuditableEntries(entries);
 
 			var saveResult = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 
 			if (this.Parent != null)
 			{
-				this.Parent.ChildAuditableEntries.Merge(preSaveEntries);
+				_entityAuditor.Merge(
+					this.Parent.ChildAuditableEntries,
+					_entityAuditor.Merge(this.ChildAuditableEntries, entryMap));
 
 				return saveResult;
 			}
 
 			var token = this.GetCancellationToken();
 
-			var auditTask = _entityAuditor.PerformAudit(this.ChildAuditableEntries.Merge(preSaveEntries), token)
-				.ConfigureAwait(false);
+			var auditTask = _entityAuditor.PerformAudit(
+				_entityAuditor.Merge(this.ChildAuditableEntries, entryMap), token
+				).ConfigureAwait(false);
 
 			return saveResult;
 		}
